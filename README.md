@@ -7,4 +7,7 @@ Usage:
 
 Flags:
   -h, --help         help for crawler
+
   -u, --url string   URL to crawl
+
+
