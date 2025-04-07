@@ -321,6 +321,46 @@ func handleDeleteStation(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "station not found", http.StatusNotFound)
 }
 
+func handleUpdateStation(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var updatedStation RadioStation
+	if err := json.NewDecoder(r.Body).Decode(&updatedStation); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	stations, err := loadStations()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	found := false
+	for i, station := range stations.Stations {
+		if station.ID == id {
+			// Preserve the original ID
+			updatedStation.ID = id
+			stations.Stations[i] = updatedStation
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		http.Error(w, "station not found", http.StatusNotFound)
+		return
+	}
+
+	if err := saveStations(stations); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(updatedStation)
+}
+
 func main() {
 	radioPlayer = NewRadioPlayer()
 	router := mux.NewRouter()
@@ -332,6 +372,7 @@ func main() {
 	router.HandleFunc("/api/stations", handleGetStations).Methods("GET")
 	router.HandleFunc("/api/stations", handleAddStation).Methods("POST")
 	router.HandleFunc("/api/stations/{id}", handleDeleteStation).Methods("DELETE")
+	router.HandleFunc("/api/stations/{id}", handleUpdateStation).Methods("PUT")
 
 	fmt.Println("Starting server on :8080...")
 	http.ListenAndServe(":8080", router)

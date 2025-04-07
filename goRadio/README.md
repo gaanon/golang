@@ -65,6 +65,20 @@ DELETE /stations/{id}
 ```
 Response: 204 No Content on success
 
+##### Update a station
+```
+PUT /stations/{id}
+```
+Request body:
+```json
+{
+    "name": "Updated Radio Name",
+    "url": "https://example.com/stream.mp3",
+    "icon": "https://example.com/new-icon.png"
+}
+```
+Response: Returns the updated station
+
 #### Playback Control
 
 ##### Start playing a station
@@ -147,6 +161,17 @@ curl -X POST http://localhost:8080/api/stop
 6. Delete a station:
 ```bash
 curl -X DELETE http://localhost:8080/api/stations/550e8400-e29b-41d4-a716-446655440000
+```
+
+7. Update a station:
+```bash
+curl -X PUT http://localhost:8080/api/stations/550e8400-e29b-41d4-a716-446655440000 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Radio Name",
+    "url": "https://example.com/stream.mp3",
+    "icon": "https://example.com/new-icon.png"
+  }'
 ```
 
 ### Error Responses
