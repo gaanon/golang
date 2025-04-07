@@ -1,0 +1,10 @@
+{
+    "stations": [
+        {
+            "id": "53d27cd9-4c37-4b8c-b00c-bd2717a72cd7",
+            "name": "Vermont Public Radio",
+            "url": "https://vpr.streamguys1.com/vpr64.mp3",
+            "icon": "https://example.com/vpr-icon.png"
+        }
+    ]
+}
