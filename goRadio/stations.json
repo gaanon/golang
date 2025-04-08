@@ -4,12 +4,13 @@
             "id": "53d27cd9-4c37-4b8c-b00c-bd2717a72cd7",
             "name": "Vermont Public Radio",
             "url": "https://vpr.streamguys1.com/vpr64.mp3",
-            "icon": "https://example.com/vpr-icon.png"
+            "icon": "https://icon-library.com/images/radio-station-icon/radio-station-icon-15.jpg"
         },
         {
             "id": "52a972df-2b96-4543-ad33-40e4d2a3e060",
             "name": "Classic FM",
-            "url": "http://media-ice.musicradio.com/ClassicFMMP3"
+            "url": "http://media-ice.musicradio.com/ClassicFMMP3",
+            "icon": "https://icon-library.com/images/radio-station-icon/radio-station-icon-15.jpg"
         }
     ]
 }

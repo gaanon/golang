@@ -44,7 +44,9 @@
                     <img src="{{.Icon}}" class="card-img-top" alt="{{.Name}}">
                     {{end}}
                     <div class="card-body">
-                        <h5 class="card-title">{{.Name}}</h5>
+                        <h5 class="card-title">
+                            <a href="/station/{{.ID}}" class="text-decoration-none">{{.Name}}</a>
+                        </h5>
                         <div class="btn-group">
                             <button class="btn btn-success btn-play" data-station-id="{{.ID}}">
                                 Play

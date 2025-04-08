@@ -383,6 +383,29 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleStationDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	station, err := findStationByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	tmpl, err := template.ParseFiles(filepath.Join("templates", "station.html"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, station)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func main() {
 	radioPlayer = NewRadioPlayer()
 	router := mux.NewRouter()
@@ -398,6 +421,7 @@ func main() {
 	router.HandleFunc("/api/stations", handleAddStation).Methods("POST")
 	router.HandleFunc("/api/stations/{id}", handleDeleteStation).Methods("DELETE")
 	router.HandleFunc("/api/stations/{id}", handleUpdateStation).Methods("PUT")
+	router.HandleFunc("/station/{id}", handleStationDetails).Methods("GET")
 
 	fmt.Println("Starting server on :8080...")
 	http.ListenAndServe(":8080", router)
