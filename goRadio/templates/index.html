@@ -10,6 +10,17 @@
     <div class="container mt-4">
         <h1 class="mb-4">Go Radio</h1>
         
+        <!-- Add Search Filter -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <input type="text" 
+                       class="form-control" 
+                       id="stationFilter" 
+                       placeholder="Search stations..."
+                       autocomplete="off">
+            </div>
+        </div>
+
         <!-- Add Station Form -->
         <div class="card mb-4">
             <div class="card-header">
@@ -36,9 +47,9 @@
         </div>
 
         <!-- Existing Stations List -->
-        <div class="row">
+        <div class="row" id="stationsList">
             {{range .Stations}}
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 station-card" data-station-name="{{.Name}}">
                 <div class="card">
                     {{if .Icon}}
                     <img src="{{.Icon}}" class="card-img-top" alt="{{.Name}}">
@@ -146,6 +157,23 @@
                         }
                     } catch (error) {
                         console.error('Error:', error);
+                    }
+                });
+            });
+
+            // Add this new code for station filtering
+            const stationFilter = document.getElementById('stationFilter');
+            const stationCards = document.querySelectorAll('.station-card');
+
+            stationFilter.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+
+                stationCards.forEach(card => {
+                    const stationName = card.dataset.stationName.toLowerCase();
+                    if (stationName.includes(searchTerm)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
                     }
                 });
             });
