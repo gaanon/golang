@@ -20,5 +20,5 @@ jobs:
 
       - name: Build for macOS ARM64
         run: |
-          cd golang/goRadio
+          cd goRadio
           GOOS=darwin GOARCH=arm64 go build -o goRadio-macos-arm64
