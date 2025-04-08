@@ -1,4 +1,4 @@
-name: Build Go Project for macOS ARM64
+name: Build Go Project for macOS AMD64
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: '1.22'  # Change to match your Go version
 
-      - name: Build for macOS ARM64
+      - name: Build for macOS AMD64
         run: |
           cd goRadio
-          GOOS=darwin GOARCH=arm64 go build -o goRadio-macos-arm64
+          GOOS=darwin GOARCH=amd64 go build -o goRadio-macos-amd64
