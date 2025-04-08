@@ -58,12 +58,10 @@ jobs:
         cp stations.json release/ || touch release/stations.json
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3.1.3
-      if: success()
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.OUTPUT_NAME }}
         path: release/
-        retention-days: 5
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
