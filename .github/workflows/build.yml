@@ -10,6 +10,9 @@ jobs:
   build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      packages: write
     strategy:
       matrix:
         include:
@@ -23,7 +26,7 @@ jobs:
             OUTPUT_NAME: goradio-raspberrypi
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -49,16 +52,18 @@ jobs:
 
     - name: Package assets
       run: |
-        mkdir release
-        cp ${{ matrix.OUTPUT_NAME }} release/
-        cp -r templates release/
+        mkdir -p release
+        cp ${{ matrix.OUTPUT_NAME }} release/ || exit 1
+        cp -r templates release/ || exit 1
         cp stations.json release/ || touch release/stations.json
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3.1.3
+      if: success()
       with:
         name: ${{ matrix.OUTPUT_NAME }}
         path: release/
+        retention-days: 5
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
