@@ -1,0 +1,73 @@
+name: Build Go Radio
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            GOOS: darwin
+            GOARCH: amd64
+            OUTPUT_NAME: goradio-macos
+          - os: ubuntu-latest
+            GOOS: linux
+            GOARCH: arm64
+            OUTPUT_NAME: goradio-raspberrypi
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Install dependencies
+      run: |
+        if [ "${{ matrix.os }}" = "macos-latest" ]; then
+          brew install pkg-config
+        else
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libasound2-dev
+        fi
+
+    - name: Build
+      env:
+        GOOS: ${{ matrix.GOOS }}
+        GOARCH: ${{ matrix.GOARCH }}
+        CGO_ENABLED: 1
+      run: |
+        go build -o ${{ matrix.OUTPUT_NAME }}
+
+    - name: Package assets
+      run: |
+        mkdir release
+        cp ${{ matrix.OUTPUT_NAME }} release/
+        cp -r templates release/
+        cp stations.json release/ || touch release/stations.json
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.OUTPUT_NAME }}
+        path: release/
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          release/${{ matrix.OUTPUT_NAME }}
+          release/templates/*
+          release/stations.json
+        tag_name: v${{ github.run_number }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
