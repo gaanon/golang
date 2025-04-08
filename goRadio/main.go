@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -361,9 +363,32 @@ func handleUpdateStation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedStation)
 }
 
+func handleHome(w http.ResponseWriter, r *http.Request) {
+	stations, err := loadStations()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err := template.ParseFiles(filepath.Join("templates", "index.html"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, stations)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func main() {
 	radioPlayer = NewRadioPlayer()
 	router := mux.NewRouter()
+
+	// Home route
+	router.HandleFunc("/", handleHome).Methods("GET")
 
 	// API endpoints
 	router.HandleFunc("/api/play", handleStart).Methods("POST")
