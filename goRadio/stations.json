@@ -5,6 +5,11 @@
             "name": "Vermont Public Radio",
             "url": "https://vpr.streamguys1.com/vpr64.mp3",
             "icon": "https://example.com/vpr-icon.png"
+        },
+        {
+            "id": "52a972df-2b96-4543-ad33-40e4d2a3e060",
+            "name": "Classic FM",
+            "url": "http://media-ice.musicradio.com/ClassicFMMP3"
         }
     ]
 }

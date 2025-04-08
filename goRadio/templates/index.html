@@ -10,6 +10,32 @@
     <div class="container mt-4">
         <h1 class="mb-4">Go Radio</h1>
         
+        <!-- Add Station Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Add New Station</h5>
+            </div>
+            <div class="card-body">
+                <form id="addStationForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="stationName" placeholder="Station Name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="url" class="form-control" id="stationUrl" placeholder="Stream URL" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="url" class="form-control" id="stationIcon" placeholder="Icon URL (optional)">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary w-100">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Existing Stations List -->
         <div class="row">
             {{range .Stations}}
             <div class="col-md-4 mb-3">
@@ -47,6 +73,38 @@
                         updateButtons();
                     }
                 });
+
+            // Add Station Form Handler
+            document.getElementById('addStationForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const newStation = {
+                    name: document.getElementById('stationName').value,
+                    url: document.getElementById('stationUrl').value,
+                    icon: document.getElementById('stationIcon').value || null
+                };
+
+                try {
+                    const response = await fetch('/api/stations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newStation)
+                    });
+
+                    if (response.ok) {
+                        // Reload the page to show the new station
+                        window.location.reload();
+                    } else {
+                        const error = await response.text();
+                        alert('Error adding station: ' + error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error adding station');
+                }
+            });
 
             // Play button click handler
             document.querySelectorAll('.btn-play').forEach(button => {
